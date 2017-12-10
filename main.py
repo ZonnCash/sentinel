@@ -13,9 +13,15 @@ import logging
 import traceback
 
 from builtins import input
-from colorama import init
-from termcolor import colored
-from pynput import keyboard
+
+try:
+    from colorama import init
+    from termcolor import colored
+    from pynput import keyboard
+
+    DISPLAY_AVAILABLE = True
+except:
+    DISPLAY_AVAILABLE = False
 
 
 def random_string(n):
@@ -164,10 +170,22 @@ def menu():
     print('Select an option:')
     print('\t1. Start sentinel')
     print('\t2. Fix wallet and masternode')
-    print('')
-    
+
     global menu_option 
     menu_option = 0
+
+    # No PyInput means no auto-start if no command line option was given, sry!
+    if not DISPLAY_AVAILABLE:
+        while menu_option not in (1, 2):
+            try:
+                menu_option = int(input('Please write 1 or 2 and press [ENTER]: '))
+            except:
+                pass
+                
+        return menu_option
+
+    print('')
+    
 
     def on_release(key):
         global menu_option 
